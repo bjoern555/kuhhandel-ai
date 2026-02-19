@@ -150,6 +150,27 @@ class Player:
         """Sum of all money card values in hand."""
         return sum(card.amount for card in self.money)
 
+    def add_money(self, cards: list[MoneyCard]) -> None:
+        """Add one or more money cards to the player's hidden hand."""
+        self.money.extend(cards)
+
+    def remove_money(self, cards: list[MoneyCard]) -> None:
+        """Remove specific money cards from the player's hand.
+
+        Raises:
+            ValueError: If a card to remove is not in the player's hand.
+        """
+        for card in cards:
+            self.money.remove(card)
+
+    def add_animal(self, card: AnimalCard) -> None:
+        """Add an animal card to the player's public inventory."""
+        self.animals.append(card)
+
+    def has_animal(self, animal_type: AnimalType) -> bool:
+        """Check whether the player owns at least one card of the given type."""
+        return any(c.animal_type is animal_type for c in self.animals)
+
     def __repr__(self) -> str:
         return (
             f"Player({self.name}, "

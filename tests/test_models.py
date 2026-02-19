@@ -1,6 +1,6 @@
 """Verify that the Kuhhandel data models initialize and behave correctly."""
 
-from models import AnimalCard, AnimalType, Deck, MoneyCard, MoneyValue, Player
+from engine.models import AnimalCard, AnimalType, Deck, MoneyCard, MoneyValue, Player
 
 
 def test_animal_card_properties() -> None:
@@ -76,6 +76,53 @@ def test_player() -> None:
     print(f"  Player OK: {player}")
 
 
+def test_player_add_money() -> None:
+    player = Player(name="Alice")
+    cards = [MoneyCard(MoneyValue.TEN), MoneyCard(MoneyValue.FIFTY)]
+    player.add_money(cards)
+    assert len(player.money) == 2
+    assert player.total_money == 60
+    print("  add_money OK")
+
+
+def test_player_remove_money() -> None:
+    player = Player(name="Bob")
+    card_10 = MoneyCard(MoneyValue.TEN)
+    card_50 = MoneyCard(MoneyValue.FIFTY)
+    player.add_money([card_10, card_50])
+    player.remove_money([card_10])
+    assert len(player.money) == 1
+    assert player.total_money == 50
+    print("  remove_money OK")
+
+
+def test_player_remove_money_missing_raises() -> None:
+    player = Player(name="Carol")
+    try:
+        player.remove_money([MoneyCard(MoneyValue.FIVE_HUNDRED)])
+        assert False, "Expected ValueError"
+    except ValueError:
+        pass
+    print("  remove_money raises on missing card OK")
+
+
+def test_player_add_animal() -> None:
+    player = Player(name="Dave")
+    player.add_animal(AnimalCard(AnimalType.COW))
+    assert len(player.animals) == 1
+    assert player.animals[0].name == "Cow"
+    print("  add_animal OK")
+
+
+def test_player_has_animal() -> None:
+    player = Player(name="Eve")
+    assert not player.has_animal(AnimalType.HORSE)
+    player.add_animal(AnimalCard(AnimalType.HORSE))
+    assert player.has_animal(AnimalType.HORSE)
+    assert not player.has_animal(AnimalType.PIG)
+    print("  has_animal OK")
+
+
 if __name__ == "__main__":
     print("Running model tests...\n")
     test_animal_card_properties()
@@ -84,4 +131,9 @@ if __name__ == "__main__":
     test_deck_shuffle()
     test_deck_draw_empties()
     test_player()
+    test_player_add_money()
+    test_player_remove_money()
+    test_player_remove_money_missing_raises()
+    test_player_add_animal()
+    test_player_has_animal()
     print("\nAll tests passed.")
