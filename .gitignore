@@ -1,0 +1,14 @@
+# PyCharm specific
+.idea/
+
+# Virtual Environment
+venv/
+env/
+
+# Python specific
+__pycache__/
+*.pyc
+
+# AI Training Data (We will create this folder later)
+models/
+logs/
